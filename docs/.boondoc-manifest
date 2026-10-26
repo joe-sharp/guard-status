@@ -1,0 +1,11 @@
+Guard.md
+Guard/Status.md
+Guard/Status/JsonReader.md
+Guard/Status/Line.md
+Guard/Status/Result.md
+Guard/Status/RspecReader.md
+Guard/Status/RubocopReader.md
+Guard/Status/Segment.md
+Guard/Status/StateFile.md
+Guard/StatusVersion.md
+README.md

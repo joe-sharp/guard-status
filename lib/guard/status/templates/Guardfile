@@ -1,0 +1,4 @@
+guard :status, segments: {
+  'RuboCop' => { rubocop: 'tmp/rubocop.json' },
+  'Tests' => { rspec: 'tmp/rspec.json' }
+}

@@ -1,0 +1,28 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'lib/guard/status/templates/*'
+
+Metrics/BlockLength:
+  AllowedMethods:
+    - describe
+    - context
+
+Style/SymbolArray:
+  MinSize: 3
+
+Style/WordArray:
+  MinSize: 3
+
+# Status files use %{1}-style tokens on purpose, to fill in a state's arguments.
+Style/FormatStringToken:
+  Exclude:
+    - 'spec/**/*'

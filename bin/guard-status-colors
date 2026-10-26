@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Prints the 256 colors a `title_color:` number can pick, each number in its own color, 20 to a row.
+COLUMNS = 20
+
+(0..255).each_slice(COLUMNS) do |row|
+  puts row.map { |number| "\e[38;5;#{number}m#{number.to_s.rjust(3)}\e[0m" }.join(' ')
+end
