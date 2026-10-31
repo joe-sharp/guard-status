@@ -38,8 +38,8 @@ guard :status, segments: {
 
 ```ruby
 DEFAULT_SEGMENTS = {
-      'RuboCop' => { rubocop: 'tmp/rubocop.json' },
-      'Tests' => { rspec: 'tmp/rspec.json' }
+      "RuboCop" => { rubocop: "tmp/rubocop.json" },
+      "Tests" => { rspec: "tmp/rspec.json" }
     }.freeze
 ```
 

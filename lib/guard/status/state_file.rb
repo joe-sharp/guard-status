@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'guard/compat/plugin'
-require_relative 'result'
+require "guard/compat/plugin"
+require_relative "result"
 
 module Guard
   class Status < Plugin
@@ -17,8 +17,8 @@ module Guard
     # sequences, are treated as spaces.
     class StateFile
       BUILT_IN = {
-        'ok' => { display: '✅', severity: :success },
-        'error' => { display: '❌', severity: :failed }
+        "ok" => { display: "✅", severity: :success },
+        "error" => { display: "❌", severity: :failed }
       }.freeze
       ARGUMENT = /%\{(\d+)\}/
 
@@ -35,7 +35,7 @@ module Guard
 
       # @return [Result]
       def result
-        state, *arguments = File.read(path).scrub.gsub(/[[:cntrl:]]/, ' ').split
+        state, *arguments = File.read(path).scrub.gsub(/[[:cntrl:]]/, " ").split
         return Result.pending unless state
 
         definition = @states[state] or return Result.unknown(state)

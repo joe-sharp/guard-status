@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'guard/compat/plugin'
-require_relative 'result'
+require "json"
+require "guard/compat/plugin"
+require_relative "result"
 
 module Guard
   class Status < Plugin
@@ -19,7 +19,7 @@ module Guard
       # @return [Result]
       def result
         summary = JSON.parse(File.read(path))
-        summary = summary['summary'] if summary.is_a?(Hash)
+        summary = summary["summary"] if summary.is_a?(Hash)
         return Result.unknown unless summary.is_a?(Hash)
 
         count = count(summary)
@@ -42,7 +42,7 @@ module Guard
     class RubocopReader < JsonReader
       private
 
-      def count(summary) = summary['offense_count']
+      def count(summary) = summary["offense_count"]
       def failure(count) = Result.new(:failed, "⚠️ (#{count})")
     end
 
@@ -51,8 +51,8 @@ module Guard
       private
 
       def count(summary)
-        failures = summary['failure_count']
-        errors = summary['errors_outside_of_examples_count'] || 0
+        failures = summary["failure_count"]
+        errors = summary["errors_outside_of_examples_count"] || 0
         failures + errors if failures.is_a?(Integer) && errors.is_a?(Integer)
       end
 

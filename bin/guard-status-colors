@@ -5,5 +5,5 @@
 COLUMNS = 20
 
 (0..255).each_slice(COLUMNS) do |row|
-  puts row.map { |number| "\e[38;5;#{number}m#{number.to_s.rjust(3)}\e[0m" }.join(' ')
+  puts row.map { |number| "\e[38;5;#{number}m#{number.to_s.rjust(3)}\e[0m" }.join(" ")
 end

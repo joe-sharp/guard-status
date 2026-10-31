@@ -1,4 +1,7 @@
-guard :status, segments: {
-  'RuboCop' => { rubocop: 'tmp/rubocop.json' },
-  'Tests' => { rspec: 'tmp/rspec.json' }
-}
+# frozen_string_literal: true
+
+guard :status,
+  segments: {
+    "RuboCop" => { rubocop: "tmp/rubocop.json" },
+    "Tests" => { rspec: "tmp/rspec.json" }
+  }

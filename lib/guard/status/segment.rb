@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'guard/compat/plugin'
-require_relative 'json_reader'
-require_relative 'state_file'
+require "guard/compat/plugin"
+require_relative "json_reader"
+require_relative "state_file"
 
 module Guard
   class Status < Plugin
@@ -30,7 +30,7 @@ module Guard
         sources = SOURCES.keys & config.keys
         raise ArgumentError, "segment #{label.inspect} needs exactly one of #{SOURCES.keys.inspect}" unless sources.one?
 
-        extra = config.keys - sources - (sources == [:file] ? [:states] : [])
+        extra = config.keys - sources - ((sources == [:file]) ? [:states] : [])
         raise ArgumentError, "segment #{label.inspect} has unknown keys #{extra.inspect}" unless extra.empty?
 
         sources.first
@@ -38,7 +38,14 @@ module Guard
       private_class_method :sources
 
       def self.reader(source, config)
-        source == :file ? StateFile.new(config[:file], config.fetch(:states, {})) : SOURCES[source].new(config[source])
+        if source == :file
+          StateFile.new(
+            config[:file],
+            config.fetch(:states, {})
+          )
+        else
+          SOURCES[source].new(config[source])
+        end
       end
       private_class_method :reader
 
