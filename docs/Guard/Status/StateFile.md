@@ -25,8 +25,8 @@ ARGUMENT = /%\{(\d+)\}/
 
 ```ruby
 BUILT_IN = {
-        'ok' => { display: '✅', severity: :success },
-        'error' => { display: '❌', severity: :failed }
+        "ok" => { display: "✅", severity: :success },
+        "error" => { display: "❌", severity: :failed }
       }.freeze
 ```
 
