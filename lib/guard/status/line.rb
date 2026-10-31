@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'guard/compat/plugin'
-require_relative 'result'
+require "guard/compat/plugin"
+require_relative "result"
 
 module Guard
   class Status < Plugin
@@ -19,7 +19,7 @@ module Guard
       # @raise [ArgumentError] when the color is neither
       def initialize(results, title:, prefix:, color: 93, colorize: true)
         unless color.nil? || COLORS.key?(color) || (color.is_a?(Integer) && color.between?(0, 255))
-          raise ArgumentError, "unknown color #{color.inspect}, use #{COLORS.keys.join(', ')} or a number from 0 to 255"
+          raise ArgumentError, "unknown color #{color.inspect}, use #{COLORS.keys.join(", ")} or a number from 0 to 255"
         end
 
         @results = results
@@ -31,7 +31,7 @@ module Guard
 
       # @return [String] the labels and their results, without the title
       def summary
-        @results.map { |label, result| "#{label}: #{result.text}" }.join(' | ')
+        @results.map { |label, result| "#{label}: #{result.text}" }.join(" | ")
       end
 
       # @return [Symbol] the worst severity of any result

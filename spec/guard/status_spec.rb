@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Guard::Status do
+RSpec.describe(Guard::Status) do
   subject(:plugin) { described_class.new(options) }
 
   let(:options) { {} }
@@ -32,63 +32,63 @@ RSpec.describe Guard::Status do
     File.write(path, contents)
   end
 
-  it 'watches every file' do
+  it "watches every file" do
     expect(Guard::Watcher.match_files(plugin, %w[a.rb docs/b.md])).to eq(%w[a.rb docs/b.md])
   end
 
-  describe 'custom watchers' do
+  describe "custom watchers" do
     let(:options) { { watchers: [Guard::Watcher.new(/\.rb$/)] } }
 
-    it 'watches only what the Guardfile asks for' do
+    it "watches only what the Guardfile asks for" do
       expect(Guard::Watcher.match_files(plugin, %w[a.rb b.md])).to eq(%w[a.rb])
     end
   end
 
-  describe '#start' do
-    it 'prints the default segments before anything has run' do
+  describe "#start" do
+    it "prints the default segments before anything has run" do
       expect(printed(tty: true) { plugin.start }).to eq("\n🔮\e[38;5;93mStatus:\e[0m  RuboCop: … | Tests: …\n")
     end
 
-    it 'prints the title plain when the output is not a terminal' do
+    it "prints the title plain when the output is not a terminal" do
       expect(printed(tty: false) { plugin.start }).to eq("\n🔮Status:  RuboCop: … | Tests: …\n")
     end
 
-    it 'prints the title plain when NO_COLOR is set' do
-      stub_const('ENV', ENV.to_h.merge('NO_COLOR' => '1'))
+    it "prints the title plain when NO_COLOR is set" do
+      stub_const("ENV", ENV.to_h.merge("NO_COLOR" => "1"))
 
       expect(printed(tty: true) { plugin.start }).to eq("\n🔮Status:  RuboCop: … | Tests: …\n")
     end
 
-    context 'when the reports exist' do
+    context "when the reports exist" do
       before do
-        record('tmp/rubocop.json', '{"summary":{"offense_count":2}}')
-        record('tmp/rspec.json', '{"summary":{"failure_count":0,"errors_outside_of_examples_count":0}}')
+        record("tmp/rubocop.json", '{"summary":{"offense_count":2}}')
+        record("tmp/rspec.json", '{"summary":{"failure_count":0,"errors_outside_of_examples_count":0}}')
       end
 
-      it 'prints what they say' do
+      it "prints what they say" do
         expect { plugin.start }.to output(/RuboCop: ⚠️ \(2\) \| Tests: ✅\n\z/).to_stdout
       end
     end
 
-    context 'with segments, a title and a prefix' do
+    context "with segments, a title and a prefix" do
       let(:options) do
-        { title: 'Health', prefix: '>', segments: { 'Docs' => 'docs.txt', 'Tests' => { rspec: 'rspec.json' } } }
+        { title: "Health", prefix: ">", segments: { "Docs" => "docs.txt", "Tests" => { rspec: "rspec.json" } } }
       end
 
-      it 'prints them in order' do
-        record('docs.txt', "ok\n")
+      it "prints them in order" do
+        record("docs.txt", "ok\n")
 
         expect(printed(tty: true) { plugin.start }).to eq("\n>\e[38;5;93mHealth:\e[0m  Docs: ✅ | Tests: …\n")
       end
     end
 
-    it 'rejects a segment it cannot make sense of' do
-      expect { described_class.new(segments: { 'Docs' => 42 }) }.to raise_error(ArgumentError)
+    it "rejects a segment it cannot make sense of" do
+      expect { described_class.new(segments: { "Docs" => 42 }) }.to raise_error(ArgumentError)
     end
   end
 
-  describe 'when other guards have run' do
-    let(:options) { { segments: { 'Docs' => 'docs.txt' } } }
+  describe "when other guards have run" do
+    let(:options) { { segments: { "Docs" => "docs.txt" } } }
     let(:rubocop) { Class.new(Guard::Plugin).new }
     let(:others) { [rubocop] }
 
@@ -98,24 +98,24 @@ RSpec.describe Guard::Status do
     end
 
     before do
-      record('docs.txt', "ok\n")
+      record("docs.txt", "ok\n")
       allow($stdout).to receive(:puts)
       plugin.start
     end
 
-    it 'prints again on #reload' do
+    it "prints again on #reload" do
       plugin.reload
 
       expect($stdout).to have_received(:puts).twice
     end
 
-    it 'prints again on #run_all' do
+    it "prints again on #run_all" do
       plugin.run_all
 
       expect($stdout).to have_received(:puts).twice
     end
 
-    it 'does not print again on the next change after #run_all covered the other guards' do
+    it "does not print again on the next change after #run_all covered the other guards" do
       run_task(rubocop, :run_all_begin)
       plugin.run_all
       plugin.run_on_modifications(%w[lib/a.rb])
@@ -141,13 +141,13 @@ RSpec.describe Guard::Status do
       end
     end
 
-    it 'prints nothing when no other guard ran, whatever changed' do
+    it "prints nothing when no other guard ran, whatever changed" do
       plugin.run_on_modifications(%w[.rspec_status docs.txt])
 
       expect($stdout).to have_received(:puts).once
     end
 
-    it 'prints once for a batch in which several guards ran' do
+    it "prints once for a batch in which several guards ran" do
       run_task(rubocop)
       run_task(rubocop)
       2.times { plugin.run_on_modifications(%w[lib/a.rb]) }
@@ -155,30 +155,30 @@ RSpec.describe Guard::Status do
       expect($stdout).to have_received(:puts).twice
     end
 
-    it 'does not count the plugin itself running' do
+    it "does not count the plugin itself running" do
       run_task(plugin)
       plugin.run_on_modifications(%w[lib/a.rb])
 
       expect($stdout).to have_received(:puts).once
     end
 
-    it 'does not count tasks that are not runs' do
+    it "does not count tasks that are not runs" do
       run_task(rubocop, :start_begin)
       plugin.run_on_modifications(%w[lib/a.rb])
 
       expect($stdout).to have_received(:puts).once
     end
 
-    it 'listens to a guard once, however often it starts or reloads' do
+    it "listens to a guard once, however often it starts or reloads" do
       plugin.reload
 
       expect(rubocop.class.callbacks[[rubocop, :run_on_modifications_begin]].size).to eq(1)
     end
 
-    context 'when the other guard is replaced by a reload' do
+    context "when the other guard is replaced by a reload" do
       let(:replacement) { Class.new(Guard::Plugin).new }
 
-      it 'follows the replacement' do
+      it "follows the replacement" do
         others.replace([replacement])
         plugin.reload
         run_task(replacement)
@@ -189,36 +189,36 @@ RSpec.describe Guard::Status do
     end
   end
 
-  describe 'the notify option' do
-    let(:options) { { notify: true, segments: { 'Docs' => 'docs.txt', 'Tests' => 'tests.txt' } } }
+  describe "the notify option" do
+    let(:options) { { notify: true, segments: { "Docs" => "docs.txt", "Tests" => "tests.txt" } } }
 
     before { allow($stdout).to receive(:puts) }
 
-    it 'sends the summary with the worst severity' do
-      record('docs.txt', "ok\n")
-      record('tests.txt', "error\n")
+    it "sends the summary with the worst severity" do
+      record("docs.txt", "ok\n")
+      record("tests.txt", "error\n")
       plugin.start
 
-      expect(Guard::Compat::UI).to have_received(:notify).with('Docs: ✅ | Tests: ❌', title: 'Status', image: :failed)
+      expect(Guard::Compat::UI).to have_received(:notify).with("Docs: ✅ | Tests: ❌", title: "Status", image: :failed)
     end
 
-    it 'sends the title of the line' do
-      record('docs.txt', "ok\n")
-      described_class.new(title: 'Health', notify: true, segments: { 'Docs' => 'docs.txt' }).start
+    it "sends the title of the line" do
+      record("docs.txt", "ok\n")
+      described_class.new(title: "Health", notify: true, segments: { "Docs" => "docs.txt" }).start
 
-      expect(Guard::Compat::UI).to have_received(:notify).with('Docs: ✅', title: 'Health', image: :success)
+      expect(Guard::Compat::UI).to have_received(:notify).with("Docs: ✅", title: "Health", image: :success)
     end
 
-    it 'sends nothing by default' do
-      described_class.new(segments: { 'Docs' => 'docs.txt' }).start
+    it "sends nothing by default" do
+      described_class.new(segments: { "Docs" => "docs.txt" }).start
 
       expect(Guard::Compat::UI).not_to have_received(:notify)
     end
   end
 
-  it 'never fails the task, whatever it reads' do
-    record('docs.txt', "garbage\n")
-    plugin = described_class.new(segments: { 'Docs' => 'docs.txt' })
+  it "never fails the task, whatever it reads" do
+    record("docs.txt", "garbage\n")
+    plugin = described_class.new(segments: { "Docs" => "docs.txt" })
 
     expect { plugin.start }.to output(/Docs: \? garbage/).to_stdout
   end

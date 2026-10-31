@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'guard/compat/plugin'
-require_relative 'status/version'
-require_relative 'status/line'
-require_relative 'status/segment'
+require "guard/compat/plugin"
+require_relative "status/version"
+require_relative "status/line"
+require_relative "status/segment"
 
 module Guard
   # Prints one line summarizing what the other guards recorded.
@@ -21,8 +21,8 @@ module Guard
   #   }
   class Status < Plugin
     DEFAULT_SEGMENTS = {
-      'RuboCop' => { rubocop: 'tmp/rubocop.json' },
-      'Tests' => { rspec: 'tmp/rspec.json' }
+      "RuboCop" => { rubocop: "tmp/rubocop.json" },
+      "Tests" => { rspec: "tmp/rspec.json" }
     }.freeze
     # The tasks that run in response to changes. `_begin` fires even when the run goes on to fail, unlike `_end`.
     RUN_EVENTS = %i[run_all_begin run_on_modifications_begin run_on_additions_begin run_on_removals_begin].freeze
@@ -40,7 +40,7 @@ module Guard
       super
       @segments = options.fetch(:segments, DEFAULT_SEGMENTS).map { |label, config| Segment.build(label, config) }
       self.watchers = [Guard::Watcher.new(/./)] if watchers.empty?
-      @title = options.fetch(:title, 'Status')
+      @title = options.fetch(:title, "Status")
       @others_ran = false
       @followed = {}.compare_by_identity
       build_line({}) # fail on a bad color when Guard starts
@@ -73,8 +73,8 @@ module Guard
       @others_ran = false
       print_status
     end
-    alias run_on_additions run_on_modifications
-    alias run_on_removals run_on_modifications
+    alias_method :run_on_additions, :run_on_modifications
+    alias_method :run_on_removals, :run_on_modifications
 
     private
 
@@ -101,13 +101,18 @@ module Guard
     end
 
     def build_line(results)
-      Line.new(results, title: @title, prefix: options.fetch(:prefix, '🔮'),
-                        color: options.fetch(:title_color, 93), colorize: color?)
+      Line.new(
+        results,
+        title: @title,
+        prefix: options.fetch(:prefix, "🔮"),
+        color: options.fetch(:title_color, 93),
+        colorize: color?
+      )
     end
 
     # Colors only a terminal, and not when NO_COLOR asks for none (https://no-color.org).
     def color?
-      $stdout.tty? && ENV.fetch('NO_COLOR', '').empty?
+      $stdout.tty? && ENV.fetch("NO_COLOR", "").empty?
     end
   end
 end
