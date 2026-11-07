@@ -27,7 +27,7 @@ RSpec.configure do |config|
   # Each example runs in an empty project directory.
   config.around do |example|
     Dir.mktmpdir do |dir|
-      Dir.chdir(dir) { example.run }
+      Dir.chdir(dir) { example.run } # rubocop:disable ThreadSafety/DirChdir -- specs run sequentially in one process
     end
   end
 end
