@@ -4,11 +4,11 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "boondoc", "~> 0.1.0"
+gem "boondoc", "~> 0.2.0"
 gem "ostruct" # guard's DSL requires it; no longer a default gem in Ruby 4.0
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
-gem "rubocop", "~> 1.21"
+gem "rubocop", "~> 1.92"
 gem "rubocop-performance", require: false
 gem "rubocop-rspec", require: false
 gem "simplecov", "~> 1.3", require: false
